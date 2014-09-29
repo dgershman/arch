@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <input type="text" id="searchData"><input type="button" id="searchStart" value="Search">
+
+    <div id="searchResponse"></div>
+  </body>
+  <script type="text/javascript">
+    $(function() {
+        $("#searchStart").click(function() {
+            searchData = $("#searchData").val();
+            $("#searchResponse").html("");
+            $.get("http://127.0.0.1:9200/arch/_search?pretty=true&q=" + searchData, function(data) {
+                $(data.hits.hits).each(function(index, element) {
+                    $("#searchResponse").append("<div class='responseItem'><a href='" + element._id + "' target='_blank'>link</a></div>");
+                });
+            });
+        });
+    });
+  </script>
+</html>
