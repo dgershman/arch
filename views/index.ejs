@@ -10,7 +10,6 @@
   <body>
     <div class="siteTitle"><%= title %></div>
     <input type="text" id="searchData"><input type="button" id="searchStart" value="Search">
-
     <div id="searchResponse"></div>
   </body>
   <script type="text/javascript">
@@ -20,10 +19,23 @@
             $("#searchResponse").html("");
             $.get("http://127.0.0.1:9200/arch/_search?pretty=true&q=" + searchData, function(data) {
                 $(data.hits.hits).each(function(index, element) {
-                    $("#searchResponse").append("<div class='responseItem'><a href='" + element._id + "' target='_blank'>" + element._source.title + "</a></div>");
+                    $("#searchResponse").append("<div class='responseItem'><div class='responseTitle'>"
+                            + (index + 1) + ". <a href='" + element._id + "' target='_blank'>" + element._source.title
+                            + "</a></div><div class='responseText'>" + prepDescription(element._source.content)
+                            + "</div></div>");
                 });
+
+                if (data.hits.hits.length == 0) {
+                    $("#searchResponse").append("<div class='responseItem'>No results found.</div>");
+                }
             });
         });
     });
+
+    function prepDescription(text) {
+        return text.replace("\r\n", "").replace("  ", "").substring(0,1000);
+    }
   </script>
+
+  <div class="siteFooter">Copyright 2014-2015 arch/arch.engine [dannyg] <a href="https://github.com/radius314/arch/issues" target="_blank">having issues/feature requests?</a></div>
 </html>
